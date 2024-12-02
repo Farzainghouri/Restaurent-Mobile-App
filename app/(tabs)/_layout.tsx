@@ -1,15 +1,18 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, {useState} from 'react';
 import { Platform } from 'react-native';
+import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'; 
+import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, FlatList, Linking, Animated, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { useCart } from "../context/context"; 
 
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { cartItems } = useCart();
 
   return (
     <Tabs
@@ -20,26 +23,56 @@ export default function TabLayout() {
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
           },
-          default: {},
+          default: {
+            backgroundColor: '#fff', 
+            borderTopWidth: 1,
+            borderTopColor: '#E5E7EB', 
+          },
         }),
-      }}>
-      <Tabs.Screen
-        name="index"
+      }}
+    >
+      
+            <Tabs.Screen
+        name="home"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'HOME',
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="home-filled" size={26} color={color} />  // Attractive home icon
+          ),
         }}
       />
+      
       <Tabs.Screen
-        name="explore"
+        name="profile"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'PROFILE',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="user-circle" size={26} color={color} />  // FontAwesome profile icon
+          ),
         }}
       />
     </Tabs>
   );
 }
+
+
+const styles = StyleSheet.create({
+  cartBadge: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: '#FF6347',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cartBadgeText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+})
