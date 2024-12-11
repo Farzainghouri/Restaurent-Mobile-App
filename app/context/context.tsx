@@ -15,7 +15,9 @@ interface CartContextType {
   removeFromCart: (itemId: number) => void;
   clearCart: () => void;
   preview: any; // Add preview type (can be customized based on your data)
+  ids: any; // Add preview type (can be customized based on your data)
   setPreview: (item: any) => void; // Function to set preview
+  setid: (item: string) => void; // Function to set preview
 }
 
 interface CartProviderProps {
@@ -29,12 +31,13 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: CartProviderProps) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [preview, setPreview] = useState<any>(null); // Preview state for product
+  const [ids, setid] = useState<string>(''); // Preview state for product
 
   // Load cart items from AsyncStorage on mount
   useEffect(() => {
     const loadCart = async () => {
       try {
-        const storedCart = await AsyncStorage.getItem("cartItems");
+        const storedCart = await AsyncStorage.getItem(ids);
         if (storedCart) {
           setCartItems(JSON.parse(storedCart));
         }
@@ -47,10 +50,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   }, []);
 
   // Save cart items to AsyncStorage whenever they change
+  // const new = ids;
   useEffect(() => {
     const saveCart = async () => {
       try {
-        await AsyncStorage.setItem("cartItems", JSON.stringify(cartItems));
+        await AsyncStorage.setItem( ids , JSON.stringify(cartItems));
       } catch (error) {
         console.error("Error saving cart items", error);
       }
@@ -68,10 +72,23 @@ export const CartProvider = ({ children }: CartProviderProps) => {
           i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
         );
       } else {
+        // Save the id if it's a new item
+        saveId(item.id); 
         return [...prevCartItems, { ...item, quantity: 1 }];
       }
     });
   };
+  
+  // Function to save the ID (e.g., AsyncStorage, state, or context)
+  const saveId = async (id: number) => {
+    try {
+      await AsyncStorage.setItem("savedItemId", JSON.stringify(id));
+      console.log("ID saved:", id);
+    } catch (error) {
+      console.error("Failed to save ID:", error);
+    }
+  };
+  
 
   // Remove from cart function
   const removeFromCart = (itemId: number) => {
@@ -87,7 +104,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   return (
     <CartContext.Provider
-      value={{ cartItems, addToCart, removeFromCart, clearCart, preview, setPreview }}
+      value={{ cartItems, addToCart, removeFromCart, clearCart, preview, setPreview , ids , setid}}
     >
       {children}
     </CartContext.Provider>

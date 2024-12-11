@@ -21,7 +21,6 @@ const ProductPreviewScreen: React.FC = () => {
 
   const handleAddToCart = (product: any) => {
     addToCart(product); // Add the product to the cart
-    router.push('/cart'); // Navigate to the cart page
   };
 
   return (

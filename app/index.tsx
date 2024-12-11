@@ -23,7 +23,7 @@ const WelcomeScreen: React.FC = () => {
         />
 
         {/* Welcome Message */}
-        <Text style={styles.title}>Gouri's Restaurant!</Text>
+        <Text style={styles.title}>BEST FOODS</Text>
         <Text style={styles.subtitle}>
           Savor the flavors, experience the excellence.
         </Text>

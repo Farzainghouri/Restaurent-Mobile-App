@@ -1,34 +1,81 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, FlatList, Linking, Animated, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, FlatList, Linking, Animated, TouchableOpacity, Modal, TextInput, Button  } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; // For star rating icons
+import { useRouter } from 'expo-router'; // Import useRouter
 import { useCart } from "../context/context"; // Adjust the path as needed
+// import {setPreview} from '../screen/Preview'
 
-export default function FastFood() {
+export default function HomeScreen() {
+  // const [cart, setCart] = useState<any[]>([]);
+  const { addToCart, cartItems ,removeFromCart ,setPreview  } = useCart();
+
   const [fadeAnim] = useState(new Animated.Value(0)); // Initial fade-in animation
   const [modalVisible, setModalVisible] = useState(false); // To toggle cart modal visibility
   const [inputAnim] = useState(new Animated.Value(-60)); // To animate the input bar sliding from the top
-  const { addToCart, cartItems ,removeFromCart ,clearCart  } = useCart();
+
+  // Animation for the cart
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  // Fade out animation when the cart is cleared
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleClose = () => {
+    // fadeOut();
+      setModalVisible(false);
+};
 
 
+
+  // Sample data for products (you can replace it with dynamic data later)
   const fastFoodProducts = [
     { id: '1', image: require('../assets/welcmPic.jpg'), name: 'Burger', price: '200 PKR', rating: 4 },
     { id: '2', image: require('../assets/welcmPic.jpg'), name: 'Pizza', price: '500 PKR', rating: 5 },
     { id: '3', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
     { id: '4', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
   ];
-  // Add more products for other categories...
-  
-  const handleClose = () => {
-    // fadeOut();
-      setModalVisible(false);
-};
+
+  const bbqProducts = [
+    { id: '5', image: require('../assets/welcmPic.jpg'), name: 'BBQ Chicken', price: '600 PKR', rating: 4 },
+    { id: '6', image: require('../assets/welcmPic.jpg'), name: 'BBQ Ribs', price: '800 PKR', rating: 5 },
+    { id: '7', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
+    { id: '8', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
+  ];
+
+  const dessertsProducts = [
+    { id: '9', image: require('../assets/welcmPic.jpg'), name: 'Ice Cream', price: '150 PKR', rating: 3 },
+    { id: '10', image: require('../assets/welcmPic.jpg'), name: 'Cake', price: '350 PKR', rating: 4 },
+    { id: '11', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
+    { id: '12', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
+
+  ];
+
+  const beveragesProducts = [
+    { id: '13', image: require('../assets/welcmPic.jpg'), name: 'Coke', price: '50 PKR', rating: 5 },
+    { id: '14', image: require('../assets/welcmPic.jpg'), name: 'Juice', price: '100 PKR', rating: 4 },
+    { id: '15', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
+    { id: '16', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
+
+  ];
+
 
   const handleViewCart = () => {
     setModalVisible(true);
   };
 
   useEffect(() => {
-    // Trigger the fade-in animation when the component mounts
+    fadeIn();
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
@@ -58,9 +105,19 @@ export default function FastFood() {
     return stars;
   };
 
+  const chann = (e:any)=>{
+    setPreview(e)
+    router.push(`../preview/Preview`)
+
+  }
+
   const renderProductItem = (item: any) => (
     <Animated.View style={[styles.productItem, { opacity: fadeAnim }]}>
+      <TouchableOpacity   onPress={() => chann(item)}
+      >
       <Image source={item.image} style={styles.foodImage} />
+
+      </TouchableOpacity>
       <Text style={styles.productName}>{item.name}</Text>
       <Text style={styles.productPrice}>{item.price}</Text>
       <View style={styles.productRating}>{renderStarRating(item.rating)}</View>
@@ -72,32 +129,40 @@ export default function FastFood() {
       </TouchableOpacity>
     </Animated.View>
   );
+  const router = useRouter(); // Initialize router for navigation
 
-const renderCategory = (categoryTitle: string, products: any[]) => (
-  <TouchableOpacity style={styles.category}>
-    {/* <Text style={styles.categoryTitle}>{categoryTitle}</Text> */}
-    {/* Product Grid */}
-    <View style={styles.productGrid}>
-      {products.map((product) => (
-        <View key={product.id} style={styles.productItem}>
-          {renderProductItem(product)}
-        </View>
-      ))}
-    </View>
-  </TouchableOpacity>
-);
+  const handleNavigate = (e:string) => {
+          router.push(`../screen/${e}`)
+    // console.log(e);
+  
+  };
 
-  const renderCartItem = (item: any , index: any) => (
-    <View style={styles.cartItem} key={index}>
-      <Image source={item.image} style={styles.cartItemImage} />
-      <Text style={styles.cartItemName}>{item.name}</Text>
-      <Text style={styles.cartItemPrice}>{item.price}</Text>
-    </View>
+  const renderCategory = (categoryTitle: string , products: any[] , cataScree: string) => (
+
+    <TouchableOpacity style={styles.category} >
+      <Text style={styles.categoryTitle}>{categoryTitle}</Text>
+      <FlatList
+        data={products}
+        horizontal
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => renderProductItem(item)}
+        showsHorizontalScrollIndicator={false}
+      />
+      <TouchableOpacity onPress={(e) => handleNavigate(cataScree)}>
+      <Text style={styles.categoryTitlee}>View More</Text>
+
+      </TouchableOpacity>
+    </TouchableOpacity>
   );
+
 
   return (
     <View style={styles.container}>
+
       {/* Animated Input Bar */}
+      {/* <Drawer /> */}
+
+
       <Animated.View style={[styles.inputContainers, { transform: [{ translateY: inputAnim }] }]}>
   <TextInput
     style={styles.inputt}
@@ -118,35 +183,34 @@ const renderCategory = (categoryTitle: string, products: any[]) => (
 </Animated.View>
 
       <ScrollView style={styles.scrollContainer}>
-      <ImageBackground
-          source={require('../assets/burger.jpg')}
+        {/* Header Section */}
+        <ImageBackground
+          source={require('../assets/bg.jpg')}
           style={styles.header}
           resizeMode="cover"
         >
           <View style={styles.overlay} />
-          <Text style={styles.title}>Beverages</Text>
+          <Image source={require('../assets/logo.png')} style={styles.logo} />
+          <Text style={styles.title}>Ghouris Restaurant</Text>
         </ImageBackground>
 
+        {/* Categories Section */}
         <View style={styles.categoriesContainer}>
-          {/* <Text style={styles.sectionTitle}>Fast Food Items</Text> */}
+          <Text style={styles.sectionTitle}>Our Categories</Text>
 
           {/* Fast Food Section */}
-          {renderCategory('FastFood', fastFoodProducts)}
+          {renderCategory('FastFood', fastFoodProducts , 'FastFood')}
 
-          {/* BBQ Section
+          {/* BBQ Section */}
           {renderCategory('BBQ Items', bbqProducts , 'BBQ')}
 
           {/* Desserts Section */}
-          {/* {renderCategory('Desserts', beveragesProducts , 'FastFood')} */}
+          {renderCategory('Desserts', beveragesProducts , 'Dessert'/* Add more categories as needed */)}
 
           {/* Beverages Section */}
-          {/* {renderCategory('Beverages', dessertsProducts, 'FastFood')}} */}
+          {renderCategory('Beverages', dessertsProducts, 'Beverage'/* Add more categories as needed */)}
         </View>
 
-        {/* View Cart Button */}
-        {/* <TouchableOpacity style={styles.viewCartButton} onPress={handleViewCart}>
-          <Text style={styles.viewCartButtonText}>View Cart ({cart.length})</Text>
-        </TouchableOpacity> */}
 
         {/* Cart Modal */}
         <Modal
@@ -166,18 +230,27 @@ const renderCategory = (categoryTitle: string, products: any[]) => (
       {cartItems.length === 0 ? (
         <Text style={styles.emptyText}>Your cart is empty.</Text>
       ) : (
-        cartItems.map((item) => (
-          <View key={item.id} style={styles.itemContainer}>
-            <Text style={styles.itemText}>{item.name}</Text>
-            <Text style={styles.quantity}>Quantity: {item.quantity}</Text>
-            <TouchableOpacity
+        cartItems.map((item) => {
+          if (item.id == 2) {
+
+            return(
+
+              <View key={item.id} style={styles.itemContainer}>
+              <Text style={styles.itemText}>{item.id}</Text>
+              <Text style={styles.quantity}>Quantity: {item.quantity}</Text>
+              <TouchableOpacity
               style={styles.removeButton}
               onPress={() => removeFromCart(item.id)}
-            >
+              >
               <Text style={styles.removeText}>Remove</Text>
-            </TouchableOpacity>
-          </View>
-        ))
+              </TouchableOpacity>
+              </View>
+            );
+            
+          }
+            
+        }
+        )
       )}
 
      
@@ -291,8 +364,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   category: {
-    marginVertical: 10,
-    paddingHorizontal: 15,
+    marginBottom: 20,
   },
   categoryTitle: {
     fontSize: 18,
@@ -300,9 +372,15 @@ const styles = StyleSheet.create({
     color: '#555',
     marginBottom: 10,
   },
+  categoryTitlee:{
+    textAlign:'right',
+    marginVertical: 20,
+    fontWeight: 'bold',
+  },
   productItem: {
-    width: "48%", 
-    marginBottom: 10,
+    width: 150,
+    marginRight: 15,
+    alignItems: 'center',
   },
   foodImage: {
     width: 150,
@@ -491,12 +569,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 12,
     fontWeight: 'bold',
-  },
-  productGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap", // Enable wrapping of items
-    justifyContent: "space-between", // Optional: Add spacing between items
-    marginVertical: 10,
   },
   containeer: {
     flex: 1,

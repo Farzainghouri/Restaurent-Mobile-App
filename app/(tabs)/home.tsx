@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, FlatList, Linking, Animated, TouchableOpacity, Modal, TextInput, Button  } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'; // For star rating icons
-import { useRouter } from 'expo-router'; // Import useRouter
-import { useCart } from "../context/context"; // Adjust the path as needed
-// import {setPreview} from '../screen/Preview'
+import {SafeAreaView, StyleSheet, Text, View, Image, ImageBackground, ScrollView, FlatList, Linking, Animated, TouchableOpacity, Modal, TextInput, Button  } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons'; 
+import { useRouter } from 'expo-router'; 
+import { useCart } from "../context/context"; 
 
 export default function HomeScreen() {
-  // const [cart, setCart] = useState<any[]>([]);
-  const { addToCart, cartItems ,removeFromCart ,setPreview  } = useCart();
-
-  const [fadeAnim] = useState(new Animated.Value(0)); // Initial fade-in animation
-  const [modalVisible, setModalVisible] = useState(false); // To toggle cart modal visibility
+  const {setid  } = useCart();
+  const [fadeAnim] = useState(new Animated.Value(0)); 
   const [inputAnim] = useState(new Animated.Value(-60)); // To animate the input bar sliding from the top
 
   // Animation for the cart
@@ -31,48 +27,20 @@ export default function HomeScreen() {
     }).start();
   };
 
-  const handleClose = () => {
-    // fadeOut();
-      setModalVisible(false);
-};
 
 
 
   // Sample data for products (you can replace it with dynamic data later)
   const fastFoodProducts = [
-    { id: '1', image: require('../assets/welcmPic.jpg'), name: 'Burger', price: '200 PKR', rating: 4 },
-    { id: '2', image: require('../assets/welcmPic.jpg'), name: 'Pizza', price: '500 PKR', rating: 5 },
-    { id: '3', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
-    { id: '4', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
-  ];
-
-  const bbqProducts = [
-    { id: '5', image: require('../assets/welcmPic.jpg'), name: 'BBQ Chicken', price: '600 PKR', rating: 4 },
-    { id: '6', image: require('../assets/welcmPic.jpg'), name: 'BBQ Ribs', price: '800 PKR', rating: 5 },
-    { id: '7', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
-    { id: '8', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
-  ];
-
-  const dessertsProducts = [
-    { id: '9', image: require('../assets/welcmPic.jpg'), name: 'Ice Cream', price: '150 PKR', rating: 3 },
-    { id: '10', image: require('../assets/welcmPic.jpg'), name: 'Cake', price: '350 PKR', rating: 4 },
-    { id: '11', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
-    { id: '12', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
-
-  ];
-
-  const beveragesProducts = [
-    { id: '13', image: require('../assets/welcmPic.jpg'), name: 'Coke', price: '50 PKR', rating: 5 },
-    { id: '14', image: require('../assets/welcmPic.jpg'), name: 'Juice', price: '100 PKR', rating: 4 },
-    { id: '15', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
-    { id: '16', image: require('../assets/welcmPic.jpg'), name: 'Fries', price: '150 PKR', rating: 3 },
-
-  ];
+    { id: 'ghousia.FoodBridge', image: require('../assets/bg.jpg'), name: 'GHOUSIA'},
+    { id: 'mrcone.FoodBridge', image: require('../assets/welcmPic.jpg'), name: 'MR CONE'},
+    { id: 'darbar.FoodBridge', image: require('../assets/welcmPic.jpg'), name: 'DARBAR'},
+    { id: 'allahwala.FoodBridge', image: require('../assets/welcmPic.jpg'), name: ' ALLAH WALA PAKWAN'},
+    { id: 'javaid.FoodBridge', image: require('../assets/welcmPic.jpg'), name: 'JAVED NAHARI'},
+];
 
 
-  const handleViewCart = () => {
-    setModalVisible(true);
-  };
+
 
   useEffect(() => {
     fadeIn();
@@ -105,63 +73,37 @@ export default function HomeScreen() {
     return stars;
   };
 
-  const chann = (e:any)=>{
-    setPreview(e)
-    router.push(`../screen/Preview`)
 
-  }
 
-  const renderProductItem = (item: any) => (
-    <Animated.View style={[styles.productItem, { opacity: fadeAnim }]}>
-      <TouchableOpacity   onPress={() => chann(item)}
-      >
-      <Image source={item.image} style={styles.foodImage} />
-
-      </TouchableOpacity>
-      <Text style={styles.productName}>{item.name}</Text>
-      <Text style={styles.productPrice}>{item.price}</Text>
-      <View style={styles.productRating}>{renderStarRating(item.rating)}</View>
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => addToCart(item)}
-      >
-        <Text style={styles.addButtonText}>Add to Cart</Text>
-      </TouchableOpacity>
-    </Animated.View>
-  );
   const router = useRouter(); // Initialize router for navigation
 
   const handleNavigate = (e:string) => {
-          router.push(`../screen/${e}`)
+          router.push(`../screen/RestaurantProducts`)
+          setid(e)
     // console.log(e);
   
   };
 
-  const renderCategory = (categoryTitle: string , products: any[] , cataScree: string) => (
+  const renderCategory = ( products: any[] , cataScree: string) => (
 
     <TouchableOpacity style={styles.category} >
-      <Text style={styles.categoryTitle}>{categoryTitle}</Text>
-      <FlatList
-        data={products}
-        horizontal
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => renderProductItem(item)}
-        showsHorizontalScrollIndicator={false}
-      />
-      <TouchableOpacity onPress={(e) => handleNavigate(cataScree)}>
-      <Text style={styles.categoryTitlee}>View More</Text>
-
+    {products.map((items, index) => {
+      return( <TouchableOpacity key={index} onPress={() => handleNavigate(items.id)}>
+          <Text style={styles.categoryTitle}>{items.name}</Text>
+             <Image source={items.image} style={{width: "100%", height: 250}}/>
+        </TouchableOpacity>
+        )
+        
+      })}
       </TouchableOpacity>
-    </TouchableOpacity>
+  
   );
 
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView  style={styles.container}>
 
       {/* Animated Input Bar */}
-      {/* <Drawer /> */}
-
 
       <Animated.View style={[styles.inputContainers, { transform: [{ translateY: inputAnim }] }]}>
   <TextInput
@@ -172,14 +114,7 @@ export default function HomeScreen() {
   <TouchableOpacity style={styles.iconButton}>
     <FontAwesome name="search" size={20} color="#aaa" />
   </TouchableOpacity>
-  <TouchableOpacity style={styles.cartIcon} onPress={handleViewCart}>
-    <FontAwesome name="shopping-cart" size={24} color="#FF6347" />
-    {cartItems.length > 0 && (
-      <View style={styles.cartBadge}>
-        <Text style={styles.cartBadgeText}>{cartItems.length}</Text>
-      </View>
-    )}
-  </TouchableOpacity>
+
 </Animated.View>
 
       <ScrollView style={styles.scrollContainer}>
@@ -191,62 +126,22 @@ export default function HomeScreen() {
         >
           <View style={styles.overlay} />
           <Image source={require('../assets/logo.png')} style={styles.logo} />
-          <Text style={styles.title}>Ghouris Restaurant</Text>
+          <Text style={styles.title}>Food's Bridge</Text>
+          <Text style={{ color: "white", fontWeight: "100", fontSize: 15, fontFamily: "cursive" }}>
+  Sab Milaga
+</Text>
         </ImageBackground>
 
         {/* Categories Section */}
         <View style={styles.categoriesContainer}>
-          <Text style={styles.sectionTitle}>Our Categories</Text>
+          <Text style={styles.sectionTitle}>Restaurant List</Text>
 
           {/* Fast Food Section */}
-          {renderCategory('FastFood', fastFoodProducts , 'FastFood')}
-
-          {/* BBQ Section */}
-          {renderCategory('BBQ Items', bbqProducts , 'BBQ')}
-
-          {/* Desserts Section */}
-          {renderCategory('Desserts', beveragesProducts , 'Dessert'/* Add more categories as needed */)}
-
-          {/* Beverages Section */}
-          {renderCategory('Beverages', dessertsProducts, 'Beverage'/* Add more categories as needed */)}
-        </View>
+          {renderCategory(fastFoodProducts , 'FastFood')}
+</View>
 
 
-        {/* Cart Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-           <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-      <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-        <Text style={styles.closeText}>close</Text>
-      
-      </TouchableOpacity>
-
-      <Text style={styles.title}>Your Cart</Text>
-
-      {cartItems.length === 0 ? (
-        <Text style={styles.emptyText}>Your cart is empty.</Text>
-      ) : (
-        cartItems.map((item) => (
-          <View key={item.id} style={styles.itemContainer}>
-            <Text style={styles.itemText}>{item.name}</Text>
-            <Text style={styles.quantity}>Quantity: {item.quantity}</Text>
-            <TouchableOpacity
-              style={styles.removeButton}
-              onPress={() => removeFromCart(item.id)}
-            >
-              <Text style={styles.removeText}>Remove</Text>
-            </TouchableOpacity>
-          </View>
-        ))
-      )}
-
-     
-    </Animated.View>
-        </Modal>
+       
 
         {/* Footer Section */}
         <ImageBackground
@@ -275,7 +170,7 @@ export default function HomeScreen() {
           <Text style={styles.footerText}>© 2024 Ghouris Restaurant - All Rights Reserved</Text>
         </ImageBackground>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -283,7 +178,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    width: '100%',
+    marginTop: 50
   },
   scrollContainer: {
     flex: 1,
@@ -358,10 +253,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   categoryTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#555',
-    marginBottom: 10,
+    marginVertical: 20,
+    borderBottomWidth: 2
   },
   categoryTitlee:{
     textAlign:'right',
